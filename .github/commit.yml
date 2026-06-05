@@ -1,10 +1,10 @@
-name: Commit
+name: Extra Commit
 
 on:
   workflow_dispatch:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   main:
@@ -35,4 +35,4 @@ jobs:
 
       - name: update list
         run: |
-          git commit --amend
+          git commit --allow-empty -m "update"
