@@ -21,8 +21,10 @@ jobs:
         run: |
           # git config --global user.email "${APP_ID}+${APP_SLUG}[bot]@users.noreply.github.com"
           # git config --global user.name "${APP_SLUG}[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git config --global user.name "github-actions[bot]"
+          # git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # git config --global user.name "github-actions[bot]"
+          git config --global user.email "49699333+dependabot[bot]@users.noreply.github.com"
+          git config --global user.name "dependabot[bot]"
           git config --global url."https://x-access-token:${GITHUB_TOKEN}@github.com/".insteadOf https://github.com/
         env:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
