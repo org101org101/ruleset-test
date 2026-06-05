@@ -36,3 +36,4 @@ jobs:
       - name: update list
         run: |
           git commit --allow-empty -m "update"
+          git push
