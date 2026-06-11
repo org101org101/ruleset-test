@@ -9,4 +9,4 @@ jobs:
     environment: prod
     steps:
       - run: |
-          echo ${{ var.WORD }}
+          echo ${{ vars.WORD }}
