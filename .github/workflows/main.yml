@@ -6,7 +6,7 @@ on:
 jobs:
   main:
     runs-on: ubuntu-latest
-    environment: prod
+    environment: "Version Bump"
     steps:
       - run: |
           echo ${{ vars.WORD }}
