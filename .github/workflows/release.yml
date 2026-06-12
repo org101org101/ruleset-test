@@ -1,0 +1,29 @@
+name: Release
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "tag"
+        required: true
+        default: ""
+        type: string
+
+permissions
+  packages: writek
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ inputs.ref }}
+          release_name: Release sbf-sdk@v${{ inputs.ref }}
+          draft: false
+          prerelease: false
