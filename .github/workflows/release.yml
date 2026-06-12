@@ -32,14 +32,21 @@ jobs:
         with:
           token: ${{ steps.app-token.outputs.token }}
           persist-credentials: false
-          
+
+      - name: Push tag
+        run: |
+          git tag -a "${REF_NAME}" -m "Release ${REF_NAME}"
+          git push origin "${REF_NAME}"
+        env:
+          REF_NAME: ${{ inputs.ref }}
+
       - name: Create Release
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
         id: create_release
         env:
           REF_NAME: ${{ inputs.ref }}
         with:
-          github-token: ${{ steps.app-token.outputs.token }}
+          github-token: ${{ secret.GITHUB_TOKEN }}
           script: |
             const release = await github.rest.repos.createRelease({
               owner: context.repo.owner,
