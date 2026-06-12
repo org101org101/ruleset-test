@@ -46,7 +46,7 @@ jobs:
         env:
           REF_NAME: ${{ inputs.ref }}
         with:
-          github-token: ${{ secret.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const release = await github.rest.repos.createRelease({
               owner: context.repo.owner,
