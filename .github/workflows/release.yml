@@ -35,7 +35,7 @@ jobs:
 
       - name: Push tag
         run: |
-          git tag -a "${REF_NAME}" -m "Release ${REF_NAME}"
+          git tag "${REF_NAME}"
           git push origin "${REF_NAME}"
         env:
           REF_NAME: ${{ inputs.ref }}
@@ -46,7 +46,7 @@ jobs:
         env:
           REF_NAME: ${{ inputs.ref }}
         with:
-          github-token: ${{ secret.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const release = await github.rest.repos.createRelease({
               owner: context.repo.owner,
