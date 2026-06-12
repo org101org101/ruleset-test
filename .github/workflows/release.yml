@@ -32,17 +32,23 @@ jobs:
         with:
           token: ${{ steps.app-token.outputs.token }}
           persist-credentials: false
-
+          
       - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
         env:
-          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+          REF_NAME: ${{ inputs.ref }}
         with:
-          tag_name: ${{ inputs.ref }}
-          release_name: Release sbf-sdk@${{ inputs.ref }}
-          draft: false
-          prerelease: false
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.repos.createRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag_name: process.env.REF_NAME,
+              name: `Release ${process.env.REF_NAME}`,
+              body: 'update',
+              draft: false,
+              prerelease: false
+            })
 
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
