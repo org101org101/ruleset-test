@@ -9,7 +9,7 @@ on:
         type: string
 
 permissions:
-  packages: writek
+  packages: write
 
 jobs:
   package:
