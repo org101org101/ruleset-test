@@ -8,23 +8,48 @@ on:
         default: ""
         type: string
 
-permissions:
-  packages: write
-  contents: write
-
 jobs:
   package:
     runs-on: ubuntu-latest
+    environment: release
     steps:
+      - name: Create github app token
+        uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v3.1.1
+        id: app-token
+        with:
+          client-id: ${{ vars.CLIENT_ID }}
+          private-key: ${{ secrets.PRIVATE_KEY }}
+
+      - name: Set git config
+        run: |
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          git config --global url."https://x-access-token:${GITHUB_TOKEN}@github.com/".insteadOf https://github.com/
+        env:
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+
       - uses: actions/checkout@v6
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          persist-credentials: false
 
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
         with:
           tag_name: ${{ inputs.ref }}
-          release_name: Release sbf-sdk@v${{ inputs.ref }}
+          release_name: Release sbf-sdk@${{ inputs.ref }}
           draft: false
           prerelease: false
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build.tar.bz2
+          asset_name: build.tar.bz2
+          asset_content_type: application/x-tar
