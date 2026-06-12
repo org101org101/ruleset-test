@@ -8,7 +8,7 @@ on:
         default: ""
         type: string
 
-permissions
+permissions:
   packages: writek
 
 jobs:
