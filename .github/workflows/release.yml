@@ -10,7 +10,7 @@ on:
 
 permissions:
   packages: write
-  content: write
+  contents: write
 
 jobs:
   package:
