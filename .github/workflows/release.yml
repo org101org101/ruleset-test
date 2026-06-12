@@ -35,12 +35,13 @@ jobs:
           
       - name: Create Release
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
+        id: create_release
         env:
           REF_NAME: ${{ inputs.ref }}
         with:
           github-token: ${{ steps.app-token.outputs.token }}
           script: |
-            github.rest.repos.createRelease({
+            const release = await github.rest.repos.createRelease({
               owner: context.repo.owner,
               repo: context.repo.repo,
               tag_name: process.env.REF_NAME,
@@ -49,13 +50,20 @@ jobs:
               draft: false,
               prerelease: false
             })
+            return release.data.id
 
       - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
         env:
-          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+          RELEASE_ID: ${{ steps.create_release.outputs.result }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build.tar.bz2
-          asset_name: build.tar.bz2
-          asset_content_type: application/x-tar
+          github-token: ${{ steps.app-token.outputs.token }}
+          script: |
+            const fs = require('fs')
+            await github.rest.repos.uploadReleaseAsset({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              release_id: process.env.RELEASE_ID,
+              name: 'build.tar.bz2',
+              data: fs.readFileSync('./build.tar.bz2')
+            })
